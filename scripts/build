@@ -2,7 +2,7 @@
 
 set -e
 
-IMAGE=cloudnautique/vol-cleanup
+IMAGE=vol-cleanup
 BUILD=${IMAGE}-build
 BIN_TARGET=/usr/bin/vol-cleanup
 
