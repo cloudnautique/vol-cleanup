@@ -1,4 +1,4 @@
-## Clean up Orphaned Docker Volumes
+## Clean Up Orphaned Docker Volumes
 
 ### Purpose:
 This tool is created to periodically remove orphaned volumes where the contents are not going to need future retrieval. In some environments where containers are treated ephemerally and  have high turnover there is the potential to generate a lot of space consuming orphaned volumes. It is VERY difficult to track down the origin of a particular volume once the container it was attached to is gone.
