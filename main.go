@@ -9,6 +9,10 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+const (
+	dockerVolumeDirectory = "/var/lib/docker/volumes"
+)
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "vol-cleanup"
@@ -35,10 +39,14 @@ func main() {
 }
 
 func Start(interval int, noop bool) error {
+	if _, err := os.Stat(dockerVolumeDirectory); os.IsNotExist(err) {
+		log.Fatalf("Could not open Volume directory: %s", dockerVolumeDirectory)
+	}
+
 	for {
 		log.Infof("Waking up to check for volumes...")
 		vols := &volumes.Volumes{}
-		err := vols.GetVolumes("/var/lib/docker/volumes")
+		err := vols.GetVolumes(dockerVolumeDirectory)
 		if err != nil {
 			log.Fatalf("Error Getting volumes.", err)
 			return err
