@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+IMAGE=cloudnautique/vol-cleanup
+BUILD=${IMAGE}-build
+BIN_TARGET=/usr/bin/vol-cleanup
+
+cd $(dirname $0)/..
+
+mkdir -p ./dist
+docker build -t $BUILD .
+docker run -v $(pwd)/dist:/target $BUILD cp ${BIN_TARGET} /target

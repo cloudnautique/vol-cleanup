@@ -1,0 +1,24 @@
+{
+	"ImportPath": "github.com/cloudnautique/vol-cleanup",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.8.6-7-g9c060de",
+			"Rev": "9c060de643590dae45da9d7c26276463bfc46fa0"
+		},
+		{
+			"ImportPath": "github.com/cloudnautique/go-vol/volumes",
+			"Rev": "efee32dcc339fb4f680a1b84bef771c79cc4190c"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-137-gbca61c4",
+			"Rev": "bca61c476e3c752594983e4c9bcd5f62fb09f157"
+		},
+		{
+			"ImportPath": "github.com/fsouza/go-dockerclient",
+			"Rev": "3ef29fee64703523b191df64d96a28204c86460c"
+		}
+	]
+}

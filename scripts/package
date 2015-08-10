@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+IMAGE=cloudnautique/vol-cleanup
+
+cd $(dirname $0)/..
+./scripts/build
+
+docker build -t $IMAGE -f Dockerfile.dist .

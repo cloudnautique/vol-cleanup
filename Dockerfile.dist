@@ -1,0 +1,5 @@
+FROM busybox
+
+ADD ./dist/vol-cleanup /
+ENTRYPOINT ["/vol-cleanup"]
+CMD ["-h"]
