@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	dockerSocket = "unix:///var/run/docker.sock"
+	dockerSocket     = "unix:///var/run/docker.sock"
+	dockerAPIVersion = "1.19"
 )
 
 type Volume struct {
@@ -23,7 +24,7 @@ type Volume struct {
 type Volumes map[string]Volume
 
 func getDockerClient() *docker.Client {
-	client, _ := docker.NewClient(dockerSocket)
+	client, _ := docker.NewVersionedClient(dockerSocket, dockerAPIVersion)
 	return client
 }
 

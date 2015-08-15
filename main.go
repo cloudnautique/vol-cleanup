@@ -5,7 +5,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/cloudnautique/go-vol/volumes"
+	"github.com/cloudnautique/vol-cleanup/volumes"
 	"github.com/codegangsta/cli"
 )
 
