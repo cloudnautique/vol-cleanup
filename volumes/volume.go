@@ -30,7 +30,10 @@ func getDockerClient() *docker.Client {
 
 func (v Volumes) GetVolumes(volumeDir string) error {
 	client := getDockerClient()
-	info, _ := client.Info()
+	info, err := client.Info()
+	if err != nil {
+		return err
+	}
 	dockerPfx := info.Get("DockerRootDir")
 
 	// Get all VFS Docker volumes from Disk.
