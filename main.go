@@ -48,7 +48,7 @@ func Start(interval int, noop bool) error {
 		vols := &volumes.Volumes{}
 		err := vols.GetVolumes(dockerVolumeDirectory)
 		if err != nil {
-			log.Fatalf("Error Getting volumes.", err)
+			log.Fatalf("Could not get volumes: %s", err)
 			return err
 		}
 
