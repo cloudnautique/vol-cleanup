@@ -45,7 +45,7 @@ func Start(interval int, noop bool) error {
 
 	for {
 		log.Infof("Waking up to check for volumes...")
-		vols := &volumes.Volumes{}
+		vols := volumes.NewVolumesManager()
 		err := vols.GetVolumes(dockerVolumeDirectory)
 		if err != nil {
 			log.Fatalf("Could not get volumes: %s", err)

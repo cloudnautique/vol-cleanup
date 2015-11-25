@@ -9,28 +9,22 @@ import (
 	"github.com/fsouza/go-dockerclient"
 )
 
-const (
-	dockerSocket     = "unix:///var/run/docker.sock"
-	dockerAPIVersion = "1.19"
-)
-
-type Volume struct {
-	ID         string
-	Attached   bool
-	Path       string
-	DockerPath string
+type volumesPre19 struct {
+	volumes      map[string]Volume
+	dockerClient *docker.Client
 }
 
-type Volumes map[string]Volume
-
-func getDockerClient() *docker.Client {
-	client, _ := docker.NewVersionedClient(dockerSocket, dockerAPIVersion)
-	return client
+func newVolumesPre19(client *docker.Client) *volumesPre19 {
+	vol := &volumesPre19{
+		volumes:      make(map[string]Volume),
+		dockerClient: client,
+	}
+	var _ VolumesManager = vol
+	return vol
 }
 
-func (v Volumes) GetVolumes(volumeDir string) error {
-	client := getDockerClient()
-	info, err := client.Info()
+func (v *volumesPre19) GetVolumes(volumeDir string) error {
+	info, err := v.dockerClient.Info()
 	if err != nil {
 		return err
 	}
@@ -53,7 +47,7 @@ func (v Volumes) GetVolumes(volumeDir string) error {
 			DockerPath: dockerPath,
 		}
 
-		v[volume.DockerPath] = *volume
+		v.volumes[volume.DockerPath] = *volume
 		log.Debugf("Volume path: %v", volume.Path)
 	}
 
@@ -65,13 +59,13 @@ func (v Volumes) GetVolumes(volumeDir string) error {
 	return nil
 }
 
-func (v Volumes) DeleteAllOrphans(noop bool) error {
+func (v volumesPre19) DeleteAllOrphans(noop bool) error {
 	message := "NOOP: Deleting volume: "
 	if noop == false {
 		message = "Deleting volume: "
 	}
 
-	for key, volume := range v {
+	for key, volume := range v.volumes {
 		if volume.Attached == false {
 			log.Infof("%v: %v", message, key)
 			if noop == false {
@@ -85,8 +79,8 @@ func (v Volumes) DeleteAllOrphans(noop bool) error {
 	return nil
 }
 
-func (v Volumes) DeleteVolume(id string) error {
-	for _, volume := range v {
+func (v volumesPre19) DeleteVolume(id string) error {
+	for _, volume := range v.volumes {
 		if volume.ID == id && volume.Attached == false {
 			err := rmVolume(volume.Path)
 			if err != nil {
@@ -98,14 +92,11 @@ func (v Volumes) DeleteVolume(id string) error {
 }
 
 func rmVolume(volPath string) error {
-	err := os.RemoveAll(volPath)
-	return err
+	return os.RemoveAll(volPath)
 }
 
-func (v Volumes) setAttachedVolumes() error {
-	client := getDockerClient()
-
-	existingContainers, err := client.ListContainers(
+func (v volumesPre19) setAttachedVolumes() error {
+	existingContainers, err := v.dockerClient.ListContainers(
 		docker.ListContainersOptions{
 			All: true,
 		})
@@ -116,12 +107,12 @@ func (v Volumes) setAttachedVolumes() error {
 
 	// loop over existing containers
 	for _, container := range existingContainers {
-		containerInfo, _ := client.InspectContainer(container.ID)
+		containerInfo, _ := v.dockerClient.InspectContainer(container.ID)
 		for _, val := range containerInfo.Volumes {
-			if _, exists := v[val]; exists {
-				volume := v[val]
+			if _, exists := v.volumes[val]; exists {
+				volume := v.volumes[val]
 				volume.Attached = true
-				v[val] = volume
+				v.volumes[val] = volume
 			}
 		}
 	}
