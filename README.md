@@ -6,7 +6,7 @@ This tool is created to periodically remove orphaned volumes where the contents 
 ### Quick Usage
 
 ```
-docker run -d -v /var/lib/docker:/var/lib/docker -v /var/run/docker.sock:/var/run/docker.sock cloudnautique/vol-cleanup [-n] -i 5
+docker run -d --privileged -v /var/lib/docker:/var/lib/docker -v /var/run/docker.sock:/var/run/docker.sock cloudnautique/vol-cleanup [-n] -i 5
 ```
 
 If you run with `-n` it will log what it would delete.
